@@ -1,0 +1,33 @@
+﻿@{
+    Layout = null;
+}
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>SignalR sample</title>
+    <script src="~/js//signalr/signalr.min.js"></script>
+</head>
+<body>
+    <input type="button" id="button1" value="test" />
+    <ul id="list" />
+
+    <script>
+        let connection = new signalR.HubConnectionBuilder().withUrl("/SignalR_Sample").build();
+
+        connection.on("ClientMethod1", function (userName, message) {
+            let liItem = document.createElement('li');
+            liItem.appendChild(document.createTextNode(userName + ":" + message));
+            document.getElementById("list").appendChild(liItem);
+        });
+
+        connection.start().then(function () {
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+        document.getElementById("button1").onclick = function () {
+            connection.invoke("ServerMethod1", "WebUser", "WebMessage");
+        }
+
+    </script>
+</body>
+</html>
